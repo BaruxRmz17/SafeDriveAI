@@ -69,6 +69,9 @@ const Navbar: React.FC = () => {
             <Link to="/FatigueDetails" className="text-gray-700 text-sm font-medium px-4 py-2 rounded-md transition duration-300 hover:bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600  hover:text-white shadow-sm">
               Fatiga
             </Link>
+            <Link to="/Nosotros" className="text-gray-700 text-sm font-medium px-4 py-2 rounded-md transition duration-300 hover:bg-gradient-to-r from-pink-500 via-purple-600 to-blue-600  hover:text-white shadow-sm">
+              Nosotros
+            </Link>
             <button
               onClick={handleLogout}
               className="text-white text-sm font-medium px-4 py-2 rounded-md transition duration-300 bg-red-500 hover:bg-red-600 shadow-sm"
@@ -97,6 +100,9 @@ const Navbar: React.FC = () => {
             </Link>
             <Link to="/FatigueDetails" className="block text-gray-700 px-3 py-2 rounded-md text-base font-medium transition hover:bg-blue-500 hover:text-white" onClick={() => setIsOpen(false)}>
               Fatiga
+            </Link>
+            <Link to="/Nosotros" className="block text-gray-700 px-3 py-2 rounded-md text-base font-medium transition hover:bg-blue-500 hover:text-white" onClick={() => setIsOpen(false)}>
+              Nosotros
             </Link>
             <button
               onClick={() => {

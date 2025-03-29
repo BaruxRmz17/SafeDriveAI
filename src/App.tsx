@@ -9,6 +9,7 @@ import RecentFatigueEvents from './pages/RecentFatigueEvents';
 import Navbar from './components/Navbar';
 import Footer from './components/footer';
 import supabase from './services/supabase';
+import Nosotros from './pages/Nosotros';
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -44,6 +45,8 @@ const App: React.FC = () => {
             <Route path="/FatigueDetails" element={<FatigueDetails />} />
             <Route path="/Emociones" element={<Emociones />} />
             <Route path="/RecentFatigueEvents" element={<RecentFatigueEvents />} />
+            <Route path="/Nosotros" element={<Nosotros />} />
+
           </Routes>
         </main>
 
