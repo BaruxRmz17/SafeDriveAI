@@ -167,6 +167,16 @@ const Emociones: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-white p-6">
+      <motion.div
+        className="mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <h1 className="text-4xl font-extrabold"><span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+          Detalles de Emociones </span>
+        </h1>
+      </motion.div>
       {/* Filtro por fechas */}
       <motion.div
         className="bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg p-6 mb-6 transition-shadow duration-300"

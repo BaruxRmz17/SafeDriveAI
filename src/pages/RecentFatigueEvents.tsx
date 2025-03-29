@@ -92,45 +92,20 @@ const RecentFatigueEvents: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 p-6">
+    <div className="min-h-screen bg-white p-6">
+      <motion.div
+        className="mb-8"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.8 }}
+      >
+        <h1 className="text-4xl font-extrabold"><span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+          Detalles de Fatiga Recientes </span>
+        </h1>
+      </motion.div>
       
 
-      {/* Filtro por fechas */}
-      <motion.div
-        className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6 mb-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Filtrar por Fecha</h2>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div>
-            <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">
-              Fecha Inicio
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-          <div>
-            <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-              Fecha Fin
-            </label>
-            <input
-              type="date"
-              id="endDate"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
-            />
-          </div>
-        </div>
-      </motion.div>
-
+      
       {/* Tabla de Eventos */}
       {loading ? (
         <div className="text-center text-white text-xl">Cargando datos...</div>
