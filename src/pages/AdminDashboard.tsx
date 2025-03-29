@@ -178,7 +178,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 p-6">
+    <div className="min-h-screen bg-white p-6">
       {/* Encabezado */}
       <motion.div
         className="flex justify-between items-center mb-8"
@@ -186,8 +186,8 @@ const AdminDashboard: React.FC = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-4xl font-extrabold text-white">
-          Dashboard de <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-green-400">SafeDrive IA</span>
+        <h1 className="text-4xl font-extrabold text-black">
+          Dashboard de <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">SafeDrive IA</span>
         </h1>
       </motion.div>
 

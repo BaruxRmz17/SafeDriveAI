@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import supabase from '../services/supabase'; // Ajusta la ruta según tu estructura
+import supabase from '../services/supabase';
 import { Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -61,7 +61,6 @@ const Emociones: React.FC = () => {
       )
       .order('event_time', { ascending: false });
 
-    // Aplicar filtro por fechas si están definidas
     if (startDate) {
       query = query.gte('event_time', new Date(startDate).toISOString());
     }
@@ -75,11 +74,8 @@ const Emociones: React.FC = () => {
       console.error('Error fetching emotions:', error);
     } else {
       setEmotions(data || []);
-
-      // Calcular estadísticas
       setTotalEmotions(data.length);
 
-      // Emoción más común
       const emotionCounts: { [key: string]: number } = {};
       data.forEach((emotion: Emotion) => {
         emotionCounts[emotion.emotion] = (emotionCounts[emotion.emotion] || 0) + 1;
@@ -90,8 +86,7 @@ const Emociones: React.FC = () => {
       );
       setMostCommonEmotion(mostCommon[0]);
 
-      // Porcentaje de emociones positivas (ajusta según tus categorías de emociones)
-      const positiveEmotionsList = ['alerta', 'feliz', 'calmado']; // Ejemplo de emociones positivas
+      const positiveEmotionsList = ['alerta', 'feliz', 'calmado'];
       const positiveCount = data.filter((emotion: Emotion) =>
         positiveEmotionsList.includes(emotion.emotion.toLowerCase())
       ).length;
@@ -104,7 +99,6 @@ const Emociones: React.FC = () => {
     fetchEmotions();
   }, [startDate, endDate]);
 
-  // Datos para el gráfico de distribución de emociones (Doughnut)
   const emotionCounts: { [key: string]: number } = {};
   emotions.forEach((emotion) => {
     emotionCounts[emotion.emotion] = (emotionCounts[emotion.emotion] || 0) + 1;
@@ -117,18 +111,17 @@ const Emociones: React.FC = () => {
         label: 'Distribución de Emociones',
         data: Object.values(emotionCounts),
         backgroundColor: [
-          'rgba(236, 72, 153, 0.8)', // Rosa
-          'rgba(139, 92, 246, 0.8)', // Morado
-          'rgba(34, 197, 94, 0.8)',  // Verde
-          'rgba(59, 130, 246, 0.8)', // Azul
-          'rgba(234, 179, 8, 0.8)',  // Amarillo
+          'rgba(236, 72, 153, 0.8)',
+          'rgba(139, 92, 246, 0.8)',
+          'rgba(34, 197, 94, 0.8)',
+          'rgba(59, 130, 246, 0.8)',
+          'rgba(234, 179, 8, 0.8)',
         ],
         borderWidth: 1,
       },
     ],
   };
 
-  // Datos para el gráfico de emociones por conductor (Bar)
   const emotionsByDriver: { [key: string]: { [key: string]: number } } = {};
   emotions.forEach((emotion) => {
     const driverName = emotion.driver_sessions.drivers.driver_name;
@@ -158,7 +151,6 @@ const Emociones: React.FC = () => {
     datasets,
   };
 
-  // Animaciones para las filas de la tabla
   const rowVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: (i: number) => ({
@@ -168,19 +160,16 @@ const Emociones: React.FC = () => {
     }),
   };
 
-  // Animaciones para el resumen y los gráficos
   const summaryVariants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 p-6">
-     
-
+    <div className="min-h-screen bg-white p-6">
       {/* Filtro por fechas */}
       <motion.div
-        className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6 mb-6"
+        className="bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg p-6 mb-6 transition-shadow duration-300"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -221,15 +210,15 @@ const Emociones: React.FC = () => {
         initial="hidden"
         animate="visible"
       >
-        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-lg">
+        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
           <h3 className="text-lg font-semibold text-gray-800">Total de Emociones</h3>
           <p className="text-2xl font-bold text-purple-600">{totalEmotions}</p>
         </div>
-        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-lg">
+        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
           <h3 className="text-lg font-semibold text-gray-800">Emoción Más Común</h3>
           <p className="text-2xl font-bold text-purple-600">{mostCommonEmotion}</p>
         </div>
-        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-lg">
+        <div className="p-4 bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
           <h3 className="text-lg font-semibold text-gray-800">Emociones Positivas</h3>
           <p className="text-2xl font-bold text-purple-600">{positiveEmotions}%</p>
         </div>
@@ -239,7 +228,7 @@ const Emociones: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         {/* Gráfico 1: Distribución de Emociones */}
         <motion.div
-          className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6"
+          className="bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg p-6 transition-shadow duration-300"
           variants={summaryVariants}
           initial="hidden"
           animate="visible"
@@ -262,7 +251,7 @@ const Emociones: React.FC = () => {
 
         {/* Gráfico 2: Emociones por Conductor */}
         <motion.div
-          className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6"
+          className="bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg p-6 transition-shadow duration-300"
           variants={summaryVariants}
           initial="hidden"
           animate="visible"
@@ -292,7 +281,7 @@ const Emociones: React.FC = () => {
       {loading ? (
         <div className="text-center text-white text-xl">Cargando datos...</div>
       ) : (
-        <div className="bg-white bg-opacity-90 rounded-2xl shadow-lg p-6">
+        <div className="bg-white bg-opacity-90 rounded-2xl shadow-md hover:shadow-lg p-6 transition-shadow duration-300">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Lista de Emociones</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left">

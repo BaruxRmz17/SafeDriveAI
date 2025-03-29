@@ -37,7 +37,7 @@ const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-white overflow-hidden">
       <motion.div className="relative z-10 max-w-md w-full mx-auto p-8 bg-white bg-opacity-90 rounded-2xl shadow-2xl" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
         <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center">
           Iniciar Sesión en <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">SafeDrive IA</span>

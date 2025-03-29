@@ -267,22 +267,22 @@ const DriverDetails: React.FC = () => {
   const alarmsTriggeredCount = fatigueEvents.filter((event) => event.alarm_triggered).length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 p-6">
+    <div className="min-h-screen bg-white p-6">
       <motion.div
         className="mb-8"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
       >
-        <h1 className="text-4xl font-extrabold text-white">
-          Detalles de Conductores
+        <h1 className="text-4xl font-extrabold"><span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">
+          Detalles de Conductores </span>
         </h1>
       </motion.div>
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-center gap-4">
         <input
           type="text"
           placeholder="Buscar por nombre o correo"
-          className="p-2 rounded-lg text-black w-full sm:w-auto"
+          className="p-2 rounded-lg text-black w-full sm:w-auto border-black"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />

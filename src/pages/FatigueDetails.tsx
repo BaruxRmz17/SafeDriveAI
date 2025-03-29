@@ -144,7 +144,7 @@ const FatigueDetails: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-400 via-purple-500 to-blue-600 p-6">
+    <div className="min-h-screen bg-white p-6">
     
 
       {/* Filtro por fechas */}
