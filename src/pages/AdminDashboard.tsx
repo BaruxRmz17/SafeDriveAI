@@ -40,11 +40,23 @@ interface Emotion {
   emotion: string;
 }
 
+interface IncidentReport {
+  id: number;
+  incident_date: string;
+  incident_time: string;
+  location: string;
+  description: string;
+  driver_state: string;
+  driver_id: number;
+  driver?: Driver; // Relación opcional con el conductor
+}
+
 const AdminDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const [fatigueEvents, setFatigueEvents] = useState<FatigueEvent[]>([]);
   const [emotions, setEmotions] = useState<Emotion[]>([]);
+  const [incidentReports, setIncidentReports] = useState<IncidentReport[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   // Verifica si el usuario está autenticado
@@ -97,6 +109,18 @@ const AdminDashboard: React.FC = () => {
         setEmotions(emotionsData || []);
       }
 
+      // Obtener reportes de incidentes (últimos 7 días)
+      const { data: incidentData, error: incidentError } = await supabase
+        .from('incident_reports')
+        .select('*, drivers(driver_name)') // Incluye el nombre del conductor
+        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: false });
+      if (incidentError) {
+        console.error('Error fetching incident reports:', incidentError);
+      } else {
+        setIncidentReports(incidentData || []);
+      }
+
       setLoading(false);
     };
 
@@ -140,10 +164,9 @@ const AdminDashboard: React.FC = () => {
     emotionCounts[emotion.emotion] = (emotionCounts[emotion.emotion] || 0) + 1;
   });
 
-  // Filtrar las 5 emociones más frecuentes
   const topEmotions = Object.entries(emotionCounts)
-    .sort(([, a], [, b]) => b - a) // Ordenar por valor descendente
-    .slice(0, 5); // Tomar solo las primeras 5
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 5);
 
   const emotionChartData = {
     labels: topEmotions.map(([emotion]) => emotion),
@@ -192,7 +215,7 @@ const AdminDashboard: React.FC = () => {
       </motion.div>
 
       {loading ? (
-        <div className="text-center text-white text-xl">Cargando datos...</div>
+        <div className="text-center text-black text-xl">Cargando datos...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Tarjeta 1: Resumen de Conductores */}
@@ -266,63 +289,113 @@ const AdminDashboard: React.FC = () => {
             <p className="text-gray-600 mt-4">Total: <span className="font-semibold">{emotions.length}</span></p>
           </motion.div>
 
-          {/* Tarjeta 4: Últimos Eventos de Fatiga (mejorada) */}
+          {/* Tarjeta 4: Últimos Eventos de Fatiga */}
           <motion.div
-              className="p-6 bg-white bg-opacity-90 rounded-2xl shadow-lg lg:col-span-2 cursor-pointer"
-              variants={cardVariants}
-              initial="hidden"
-              animate="visible"
-              whileHover="hover"
-              onClick={() => navigate('/RecentFatigueEvents')} // Redirige a la nueva página
-            >
-              <h2 className="text-xl font-bold text-gray-800 mb-4">Últimos Eventos de Fatiga</h2>
-              <div className="overflow-x-auto rounded-lg border border-gray-200">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
-                    <tr>
-                      <th className="p-3 font-semibold rounded-tl-lg">ID Evento</th>
-                      <th className="p-3 font-semibold">Fecha y Hora</th>
-                      <th className="p-3 font-semibold">Tipo de Alerta</th>
-                      <th className="p-3 font-semibold">Segundos Ojos Cerrados</th>
-                      <th className="p-3 font-semibold rounded-tr-lg">Alarma Activada</th>
+            className="p-6 bg-white bg-opacity-90 rounded-2xl shadow-lg lg:col-span-2 cursor-pointer"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            onClick={() => navigate('/RecentFatigueEvents')}
+          >
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Últimos Eventos de Fatiga</h2>
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">
+                  <tr>
+                    <th className="p-3 font-semibold rounded-tl-lg">ID Evento</th>
+                    <th className="p-3 font-semibold">Fecha y Hora</th>
+                    <th className="p-3 font-semibold">Tipo de Alerta</th>
+                    <th className="p-3 font-semibold">Segundos Ojos Cerrados</th>
+                    <th className="p-3 font-semibold rounded-tr-lg">Alarma Activada</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {fatigueEvents.slice(0, 5).map((event, index) => (
+                    <tr
+                      key={event.event_id}
+                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
+                        index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                      }`}
+                    >
+                      <td className="p-3 text-gray-700">{event.event_id}</td>
+                      <td className="p-3 text-gray-700">
+                        {new Date(event.event_time).toLocaleString('es-ES', {
+                          day: '2-digit',
+                          month: 'short',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className="p-3 text-gray-700">{event.alert_type}</td>
+                      <td className="p-3 text-gray-700">{event.eye_closed_seconds} s</td>
+                      <td className="p-3">
+                        <span
+                          className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
+                            event.alarm_triggered
+                              ? 'bg-red-100 text-red-600'
+                              : 'bg-green-100 text-green-600'
+                          }`}
+                        >
+                          {event.alarm_triggered ? 'Sí' : 'No'}
+                        </span>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white">
-                    {fatigueEvents.slice(0, 5).map((event, index) => (
-                      <tr
-                        key={event.event_id}
-                        className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
-                          index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
-                        }`}
-                      >
-                        <td className="p-3 text-gray-700">{event.event_id}</td>
-                        <td className="p-3 text-gray-700">
-                          {new Date(event.event_time).toLocaleString('es-ES', {
-                            day: '2-digit',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                          })}
-                        </td>
-                        <td className="p-3 text-gray-700">{event.alert_type}</td>
-                        <td className="p-3 text-gray-700">{event.eye_closed_seconds} s</td>
-                        <td className="p-3">
-                          <span
-                            className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${
-                              event.alarm_triggered
-                                ? 'bg-red-100 text-red-600'
-                                : 'bg-green-100 text-green-600'
-                            }`}
-                          >
-                            {event.alarm_triggered ? 'Sí' : 'No'}
-                          </span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </motion.div>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </motion.div>
+
+          {/* Tarjeta 5: Reportes de Incidentes */}
+          <motion.div
+            className="p-6 bg-white bg-opacity-90 rounded-2xl shadow-lg lg:col-span-2 cursor-pointer"
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            whileHover="hover"
+            onClick={() => navigate('/IncidentReports')} // Redirige a una página de detalles si deseas
+          >
+            <h2 className="text-xl font-bold text-gray-800 mb-4">Reportes de Incidentes (Últimos 7 días)</h2>
+            <div className="overflow-x-auto rounded-lg border border-gray-200">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-gradient-to-r from-blue-500 to-blue-700 text-white">
+                  <tr>
+                    <th className="p-3 font-semibold rounded-tl-lg">ID</th>
+                    <th className="p-3 font-semibold">Fecha y Hora</th>
+                    <th className="p-3 font-semibold">Ubicación</th>
+                    <th className="p-3 font-semibold">Conductor</th>
+                    <th className="p-3 font-semibold">Estado del Conductor</th>
+                    <th className="p-3 font-semibold rounded-tr-lg">Descripción</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white">
+                  {incidentReports.slice(0, 5).map((report, index) => (
+                    <tr
+                      key={report.id}
+                      className={`border-t border-gray-100 hover:bg-gray-50 transition-colors ${
+                        index % 2 === 0 ? 'bg-gray-50' : 'bg-white'
+                      }`}
+                    >
+                      <td className="p-3 text-gray-700">{report.id}</td>
+                      <td className="p-3 text-gray-700">
+                        {new Date(report.incident_date).toLocaleDateString('es-ES', {
+                          day: '2-digit',
+                          month: 'short',
+                        })}{' '}
+                        {report.incident_time}
+                      </td>
+                      <td className="p-3 text-gray-700">{report.location}</td>
+                      <td className="p-3 text-gray-700">{report.drivers?.driver_name || 'Desconocido'}</td>
+                      <td className="p-3 text-gray-700">{report.driver_state}</td>
+                      <td className="p-3 text-gray-700">{report.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-gray-600 mt-4">Total: <span className="font-semibold">{incidentReports.length}</span></p>
+          </motion.div>
         </div>
       )}
     </div>

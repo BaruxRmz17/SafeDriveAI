@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/footer';
 import supabase from './services/supabase';
 import Nosotros from './pages/Nosotros';
+import ReportarIncidente from './pages/Reporte'
 
 const App: React.FC = () => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
@@ -46,6 +47,8 @@ const App: React.FC = () => {
             <Route path="/Emociones" element={<Emociones />} />
             <Route path="/RecentFatigueEvents" element={<RecentFatigueEvents />} />
             <Route path="/Nosotros" element={<Nosotros />} />
+            <Route path="/Reporte" element={<ReportarIncidente />} />
+
 
           </Routes>
         </main>
